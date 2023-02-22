@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="com.vkas.secondtranslation.ui.camare.CameraActivity.Presenter" />
+        <variable
+            name="selectedSourceLang"
+            type="Integer"
+            android:value="1" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/con_shot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_shot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_canera_result"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="26dp"
+                android:paddingTop="11dp"
+                android:paddingBottom="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_dialog_back"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:onClick="@{() ->presenter.toReturn()}"
+                    android:src="@drawable/ic_dialog_back"
+                    app:layout_constraintBottom_toTopOf="@+id/ed_camera_top"
+                    app:layout_constraintEnd_toEndOf="@+id/ed_camera_top" />
+
+                <EditText
+                    android:id="@+id/ed_camera_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="156dp"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginEnd="34dp"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="11dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_dialog_back" />
+
+                <View
+                    android:id="@+id/view_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginEnd="34dp"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ed_camera_top" />
+
+                <EditText
+                    android:id="@+id/ed_camera_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="156dp"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginEnd="34dp"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="#FF8381FF"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_line" />
+
+                <TextView
+                    android:id="@+id/tv_camera_copy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_translation_en"
+                    android:onClick="@{() ->presenter.toCopy()}"
+                    android:layout_marginTop="19dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:text="@string/copy"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ed_camera_down" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/con_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+            <androidx.camera.view.PreviewView
+                android:id="@+id/pvCameraX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <include
+                android:id="@+id/in_camera_title_st"
+                binding:presenter ="@{presenter}"
+                binding:selectedSourceLang="@{selectedSourceLang}"
+                layout="@layout/layout_camera_toolbar_st" />
+            <ImageView
+                android:id="@+id/img_camera_back"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:onClick="@{() ->presenter.toReturn()}"
+                android:src="@drawable/ic_close"
+                app:layout_constraintBottom_toBottomOf="@+id/img_camera_button"
+                app:layout_constraintEnd_toStartOf="@+id/img_camera_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/img_camera_button" />
+
+            <ImageView
+                android:id="@+id/img_camera_button"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:layout_marginBottom="87dp"
+                android:onClick="@{() ->presenter.toPhotograph()}"
+                android:src="@drawable/ic_camera_button"
+                android:text="@string/translate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_file"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:onClick="@{() ->presenter.toImageFile()}"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:text="@string/translate"
+                app:layout_constraintBottom_toBottomOf="@+id/img_camera_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_camera_button"
+                app:layout_constraintTop_toTopOf="@+id/img_camera_button" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="presenter"
+            type="com.vkas.secondtranslation.ui.translation.TranslationActivity.Presenter" />
+
+        <variable
+            name="selectedSourceLang"
+            type="Integer"
+            android:value="1" />
+
+        <variable
+            name="translationAdSt"
+            type="Boolean"
+            android:value="false" />
+
+        <variable
+            name="isTranslationEdit"
+            type="Boolean"
+            android:value="false" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:visibility="@{isTranslationEdit ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/in_translation_title_st">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_lanage_left"
+                android:gravity="center"
+                android:onClick="@{() ->presenter.toLanguage(1)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.xuexiang.xui.widget.imageview.RadiusImageView
+                    android:id="@+id/img_flag_left"
+                    android:layout_width="28dp"
+                    app:riv_is_circle="true"
+                    android:layout_height="28dp"/>
+                <TextView
+                    android:id="@+id/tv_language_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="@string/english"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@drawable/ic_baseline" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_exchange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() ->presenter.toExchange()}"
+                    android:src="@drawable/ic_exchange" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_lanage_right"
+                android:gravity="center"
+                android:onClick="@{() ->presenter.toLanguage(2)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.xuexiang.xui.widget.imageview.RadiusImageView
+                    android:id="@+id/img_flag_right"
+                    app:riv_is_circle="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"/>
+                <TextView
+                    android:id="@+id/tv_language_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="@string/english"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@drawable/ic_baseline" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/con_edit_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:background="@drawable/bg_translation_edit"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="11dp"
+            android:paddingBottom="14dp"
+            android:visibility="@{isTranslationEdit ? View.GONE : View.VISIBLE}"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+            <TextView
+                android:id="@+id/tv_language_top_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="@string/english"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#FF9696B4"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() ->presenter.toDelete()}"
+                android:padding="5dp"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/ed_translation_top"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@null"
+                android:enabled="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:hint="@string/enter_here"
+                android:onClick="@{() ->presenter.toTranslationPage()}"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/con_edit_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:background="@drawable/bg_translation_edit"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="11dp"
+            android:paddingBottom="14dp"
+            android:visibility="@{isTranslationEdit ? View.GONE : View.VISIBLE}"
+
+            app:layout_constraintTop_toBottomOf="@+id/con_edit_top">
+
+            <TextView
+                android:id="@+id/tv_language_down_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:padding="5dp"
+                android:text="@string/english"
+                android:textColor="#FFFFFFFF"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/ed_translation_down"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@null"
+                android:enabled="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="top"
+                android:onLongClick="@{() ->presenter.toCopyTxt()}"
+                android:inputType="textMultiLine"
+                android:textColor="#FF8381FF"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_language_down_name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/con_edit_translation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:background="@drawable/bg_translation_edit"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="11dp"
+            android:paddingBottom="14dp"
+            android:visibility="@{isTranslationEdit ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+            <TextView
+                android:id="@+id/tv_language_top_name_translation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="@string/english"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#FF9696B4"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_translation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() ->presenter.toDelete()}"
+                android:padding="5dp"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/ed_translation_top_translation"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/enter_here"
+                android:inputType="textMultiLine"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_translation" />
+
+            <TextView
+                android:id="@+id/tv_button_translation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_translation_dis"
+                android:gravity="center"
+                android:onClick="@{() ->presenter.toTranslation()}"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:text="@string/translaste"
+                android:textColor="#FF5B6896"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ed_translation_top_translation" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/in_translation_title_st"
+            layout="@layout/layout_toolbar_st"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

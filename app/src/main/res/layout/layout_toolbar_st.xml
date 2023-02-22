@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="searchStatus"
+            type="Boolean"
+            android:value="false" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/fl_title"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="20dp"
+            binding:contentInsetStart="0dp">
+
+            <RelativeLayout
+                android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_title_back" />
+
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/translate"
+                    android:gravity="center"
+                    android:textColor="#FFFEFF"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <com.vkas.secondtranslation.widget.EditSearchView
+                android:id="@+id/editSearchView"
+                android:visibility="@{searchStatus ? View.VISIBLE : View.GONE}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </androidx.appcompat.widget.Toolbar>
+    </FrameLayout>
+
+</layout>

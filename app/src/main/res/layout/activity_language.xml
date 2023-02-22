@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/tools"
+
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="presenter"
+            type="com.vkas.secondtranslation.ui.language.LanguageActivity.Presenter" />
+
+        <variable
+            name="layoutManager"
+            type="androidx.recyclerview.widget.RecyclerView.LayoutManager" />
+
+        <variable
+            name="recentlyAdapter"
+            type="com.vkas.secondtranslation.ui.language.LanguageRecentlyAdapter" />
+
+        <variable
+            name="allAdapter"
+            type="com.vkas.secondtranslation.ui.language.LanguageAdapter" />
+
+        <variable
+            name="selectedSourceLang"
+            type="Integer"
+            android:value="1" />
+
+        <variable
+            name="languageAdSt"
+            type="Boolean"
+            android:value="false" />
+
+        <variable
+            name="searchStatus"
+            type="Boolean"
+            android:value="false" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/in_translation_title_st">
+
+            <LinearLayout
+                android:id="@+id/lin_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_lanage_left"
+                android:gravity="center"
+                android:onClick="@{() ->presenter.toLanguage(1)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.xuexiang.xui.widget.imageview.RadiusImageView
+                    android:id="@+id/img_flag_left"
+                    app:riv_is_circle="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"/>
+                <TextView
+                    android:id="@+id/tv_language_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:text="@string/english"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@drawable/ic_baseline" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle"
+                android:onClick="@{() ->presenter.toExchange()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_exchange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_exchange" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/lin_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_lanage_right"
+                android:gravity="center"
+                android:onClick="@{() ->presenter.toLanguage(2)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.xuexiang.xui.widget.imageview.RadiusImageView
+                    android:id="@+id/img_flag_right"
+                    app:riv_is_circle="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"/>
+                <TextView
+                    android:id="@+id/tv_language_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="@string/english"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@drawable/ic_baseline" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_lanage_list"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+            <TextView
+                android:id="@+id/tvSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_search"
+                android:drawablePadding="9dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/search"
+                android:textColor="#FF3F4867"
+                android:textSize="15sp"
+                android:onClick="@{() ->presenter.toSea()}"
+                android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
+                app:drawableStartCompat="@drawable/ic_baseline_search_24" />
+
+            <LinearLayout
+                android:id="@+id/ll_recently"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}">
+
+                <TextView
+                    android:id="@+id/tv_recently"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now"
+                    android:textColor="#FF6C7697"
+                    android:textSize="12sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_recently"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    app:adapter="@{recentlyAdapter}" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_recently">
+
+                <TextView
+                    android:id="@+id/tv_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all"
+                    android:textColor="#FF9C9C9C"
+                    android:textSize="12sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="7dp"
+                    app:adapter="@{allAdapter}"
+                    app:layoutManager="@{layoutManager}" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <FrameLayout
+                android:id="@+id/pt_ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{languageAdSt ? View.VISIBLE : View.GONE}" />
+
+            <ImageView
+                android:id="@+id/img_pt_ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:visibility="@{languageAdSt ? View.GONE : View.VISIBLE}" />
+        </FrameLayout>
+
+        <include
+            android:id="@+id/in_translation_title_st"
+            binding:searchStatus="@{searchStatus}"
+            layout="@layout/layout_toolbar_st" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

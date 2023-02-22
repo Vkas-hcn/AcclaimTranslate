@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="com.vkas.secondtranslation.ui.main.MainActivity.Presenter" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#181F36"
+        android:onClick="@{() ->presenter.clickMain()}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{() ->presenter.clickMainMenu()}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="31dp"
+                android:layout_marginEnd="31dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.3">
+
+                <TextView
+                    android:id="@+id/tv_contact_us_pt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_nav_item"
+                    android:gravity="center_vertical"
+                    android:onClick="@{() ->presenter.toContactUs()}"
+                    android:paddingStart="19dp"
+                    android:paddingTop="25dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/contact_us"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@mipmap/ic_nav_arrow" />
+
+                <TextView
+                    android:id="@+id/tv_privacy_policy_pt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_nav_item"
+                    android:gravity="center_vertical"
+                    android:onClick="@{() ->presenter.toPrivacyPolicy()}"
+                    android:paddingStart="19dp"
+                    android:paddingTop="25dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/privacy_policy"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@mipmap/ic_nav_arrow" />
+
+                <TextView
+                    android:id="@+id/tv_share_pt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_nav_item"
+                    android:gravity="center_vertical"
+                    android:onClick="@{() ->presenter.toShare()}"
+                    android:paddingStart="19dp"
+                    android:paddingTop="25dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/share"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp"
+                    app:drawableEndCompat="@mipmap/ic_nav_arrow" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</layout>
+
