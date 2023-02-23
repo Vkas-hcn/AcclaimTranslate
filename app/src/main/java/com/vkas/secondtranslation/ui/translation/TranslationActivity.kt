@@ -26,8 +26,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import android.text.TextUtils
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import com.jeremyliao.liveeventbus.LiveEventBus
+import com.vkas.secondtranslation.base.AdBase
+import com.vkas.secondtranslation.stad.StLoadBackAd
+import com.vkas.secondtranslation.stad.StLoadHomeAd
+import com.vkas.secondtranslation.stad.StLoadTranslationAd
 import com.vkas.secondtranslation.utils.AcclaimUtils
 import com.vkas.secondtranslation.utils.CopyUtils
+import kotlinx.coroutines.isActive
 
 
 class TranslationActivity : BaseActivity<ActivityTranslationBinding, TranslationViewModel>() {
@@ -54,8 +63,7 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
                 if (binding.isTranslationEdit == true) {
                     binding.isTranslationEdit = false
                 } else {
-//                    returnToHomePage()
-                    finish()
+                    returnToHomePage()
                 }
             }
         }
@@ -88,34 +96,32 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
         viewModel.initializeLanguageBox(binding)
         updateLanguageItem()
         MlKitData.getInstance().fetchDownloadedModels()
-//        StLoadTranslationAd.getInstance().whetherToShowSt = false
-//        StLoadTranslationAd.getInstance().advertisementLoadingSt(this)
+        AdBase.getTranslationInstance().whetherToShowSt = false
+        AdBase.getTranslationInstance().advertisementLoadingSt(this)
+        AdBase.getBackInstance().advertisementLoadingSt(this)
         initTranslationAd()
     }
 
     private fun liveEventBusReceive() {
         //插屏关闭后跳转
-//        LiveEventBus
-//            .get(Constant.PLUG_PT_TRANSLATION_SHOW, Boolean::class.java)
-//            .observeForever {
-//                StLoadBackAd.getInstance().advertisementLoadingSt(this)
-//                finish()
-//            }
+        LiveEventBus
+            .get(Constant.PLUG_ST_BACK_AD_SHOW, Boolean::class.java)
+            .observeForever {
+                finish()
+            }
     }
 
     private fun initTranslationAd() {
-//        jobNativeAdsPt = lifecycleScope.launch {
-//            while (isActive) {
-//                PtLoadTranslationAd.getInstance()
-//                    .setDisplayNativeAdPt(this@TranslationActivity, binding)
-//                if (PtLoadHomeAd.getInstance().whetherToShowPt) {
-//                    jobNativeAdsPt?.cancel()
-//                    jobNativeAdsPt = null
-//                }
-//                delay(1000L)
-//            }
-//
-//        }
+        jobNativeAdsSt = lifecycleScope.launch {
+            while (isActive) {
+                StLoadTranslationAd.setDisplayTranslationNativeAdSt(this@TranslationActivity, binding)
+                if (AdBase.getTranslationInstance().whetherToShowSt) {
+                    jobNativeAdsSt?.cancel()
+                    jobNativeAdsSt = null
+                }
+                delay(1000L)
+            }
+        }
     }
 
     override fun initViewObservable() {
@@ -135,73 +141,36 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
      * 更新语言项
      */
     private fun updateLanguageItem() {
-        binding.tvLanguageLeft.text =
-            Locale(MlKitData.getInstance().sourceLang.value?.code).displayLanguage
-        binding.tvLanguageTopName.text =
-            Locale(MlKitData.getInstance().sourceLang.value?.code).displayLanguage
-        binding.tvLanguageTopNameTranslation.text =
-        Locale(MlKitData.getInstance().sourceLang.value?.code).displayLanguage
-        binding.tvLanguageRight.text =
-            Locale(MlKitData.getInstance().targetLang.value?.code).displayLanguage
-        binding.tvLanguageDownName.text =
-            Locale(MlKitData.getInstance().targetLang.value?.code).displayLanguage
-        AcclaimUtils.langIconMap[MlKitData.getInstance().sourceLang.value?.code]?.let {
-            binding.imgFlagLeft.setImageResource(
-                it
-            )
-        }
-        AcclaimUtils.langIconMap[MlKitData.getInstance().targetLang.value?.code]?.let {
-            binding.imgFlagRight.setImageResource(
-                it
-            )
-        }
+        updateLanguage(binding.tvLanguageLeft, MlKitData.getInstance().sourceLang.value?.code, binding.imgFlagLeft)
+        updateLanguage(binding.tvLanguageTopName, MlKitData.getInstance().sourceLang.value?.code)
+        updateLanguage(binding.tvLanguageTopNameTranslation, MlKitData.getInstance().sourceLang.value?.code)
+        updateLanguage(binding.tvLanguageRight, MlKitData.getInstance().targetLang.value?.code, binding.imgFlagRight)
+        updateLanguage(binding.tvLanguageDownName, MlKitData.getInstance().targetLang.value?.code)
     }
 
-    /**
-     * 交换翻译结果
-     */
-    fun exchangeTranslationResults() {
-        if (binding.edTranslationDown.text.isNullOrEmpty()) {
-            return
+    private fun updateLanguage(textView: TextView, langCode: String?, imageView: ImageView? = null) {
+        textView.text = Locale(langCode).displayLanguage
+        imageView?.let {
+            AcclaimUtils.langIconMap[langCode]?.let { icon ->
+                it.setImageResource(icon)
+            }
         }
-        val edTranslationTop = binding.edTranslationTop.text
-        binding.edTranslationTop.text = binding.edTranslationDown.text
-        binding.edTranslationDown.setText(edTranslationTop)
     }
 
     /**
      * 返回主页
      */
-//    private fun returnToHomePage() {
-//        App.isAppOpenSameDaySt()
-//        if (PixelUtils.isThresholdReached()) {
-//            KLog.d(logTagSt, "广告达到上线")
-//            finish()
-//            return
-//        }
-//        StLoadBackAd.getInstance().advertisementLoadingSt(this)
-//        jobBack = GlobalScope.launch {
-//            try {
-//                withTimeout(3000L) {
-//                    while (isActive) {
-//                        val showState =
-//                            StLoadBackAd.getInstance()
-//                                .displayBackAdvertisementSt(this@TranslationActivity)
-//                        if (showState) {
-//                            jobBack?.cancel()
-//                            jobBack = null
-//                        }
-//                        delay(1000L)
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                KLog.d(logTagSt, "translation-back---插屏超时")
-//                if (jobBack != null) {
-//                    finish()
-//                }
-//            }
-//        }
-//    }
+    private fun returnToHomePage() {
+        App.isAppOpenSameDaySt()
+        if (AcclaimUtils.isThresholdReached()) {
+            KLog.d(logTagSt, "广告达到上线")
+            finish()
+            return
+        }
+        if(!StLoadBackAd.displayBackAdvertisementSt(this)){
+            finish()
+        }
+    }
     inner class Presenter {
         fun toLanguage(type: Int) {
             ActivityUtils.startActivityForResult(
@@ -221,7 +190,6 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
             }
             viewModel.exchangeLanguage()
             updateLanguageItem()
-//            exchangeTranslationResults()
         }
 
         fun toDelete() {
@@ -253,6 +221,27 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
             return true
         }
     }
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(300)
+            if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+                return@launch
+            }
+            if (App.nativeAdRefreshSt) {
+                AdBase.getTranslationInstance().whetherToShowSt = false
+                if (AdBase.getTranslationInstance().appAdDataSt != null) {
+                    KLog.d(logTagSt, "onResume------>1")
+                    StLoadTranslationAd.setDisplayTranslationNativeAdSt(this@TranslationActivity, binding)
+                } else {
+                    binding.translationAdSt = false
+                    KLog.d(logTagSt, "onResume------>2")
+                    AdBase.getTranslationInstance().advertisementLoadingSt(this@TranslationActivity)
+                    initTranslationAd()
+                }
+            }
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constant.JUMP_LANGUAGE_PAGE) {
@@ -262,8 +251,7 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            returnToHomePage()
-            finish()
+            returnToHomePage()
         }
         return true
     }

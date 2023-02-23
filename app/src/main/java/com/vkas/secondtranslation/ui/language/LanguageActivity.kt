@@ -5,23 +5,39 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.vkas.secondtranslation.BR
 import com.vkas.secondtranslation.R
+import com.vkas.secondtranslation.app.App
+import com.vkas.secondtranslation.base.AdBase
 import com.vkas.secondtranslation.base.BaseActivity
 import com.vkas.secondtranslation.databinding.ActivityLanguageBinding
 import com.vkas.secondtranslation.event.Constant
+import com.vkas.secondtranslation.stad.StLoadLanguageAd
+import com.vkas.secondtranslation.stad.StLoadTranslationAd
 import com.vkas.secondtranslation.stbean.Language
 import com.vkas.secondtranslation.ui.translation.TranslationViewModel
 import com.vkas.secondtranslation.utils.AcclaimUtils
+import com.vkas.secondtranslation.utils.KLog
 import com.vkas.secondtranslation.utils.MlKitData
 import com.vkas.secondtranslation.utils.MmkvUtils
 import com.xuexiang.xutil.net.JsonUtil
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import android.view.ViewGroup
+import com.xuexiang.xui.utils.ResUtils
+import com.xuexiang.xui.utils.Utils
+import com.xuexiang.xutil.display.DensityUtils
+import com.xuexiang.xutil.tip.ToastUtils
+
 
 class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewModel>() {
     private lateinit var allAdapter: LanguageAdapter
@@ -79,23 +95,22 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
         initAllRecyclerView()
         initRecentlyRecyclerView()
         recentLanguageCursor()
-//        StLoadTranslationAd.getInstance().whetherToShowSt = false
-//        StLoadTranslationAd.getInstance().advertisementLoadingSt(this)
+        AdBase.getLanguageInstance().whetherToShowSt = false
+        AdBase.getLanguageInstance().advertisementLoadingSt(this)
         initLanguageAd()
     }
 
     private fun initLanguageAd() {
-//        jobNativeAdsSt = lifecycleScope.launch {
-//            while (isActive) {
-//                StLoadTranslationAd.getInstance()
-//                    .setDisplayLanguageNativeAdSt(this@LanguageActivity, binding)
-//                if (StLoadTranslationAd.getInstance().whetherToShowSt) {
-//                    jobNativeAdsSt?.cancel()
-//                    jobNativeAdsSt = null
-//                }
-//                delay(1000L)
-//            }
-//        }
+        jobNativeAdsSt = lifecycleScope.launch {
+            while (isActive) {
+                StLoadLanguageAd.setDisplayLanguageNativeAdSt(this@LanguageActivity, binding)
+                if (AdBase.getLanguageInstance().whetherToShowSt) {
+                    jobNativeAdsSt?.cancel()
+                    jobNativeAdsSt = null
+                }
+                delay(1000L)
+            }
+        }
     }
 
     private fun liveEventBusReceive() {
@@ -114,6 +129,9 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
             .get(Constant.SEARCH_BAR_HIDDEN, Boolean::class.java)
             .observeForever {
                 binding.searchStatus = false
+                val layoutParams: ViewGroup.LayoutParams =  binding.llLanguageDow.layoutParams
+                layoutParams.height = DensityUtils.dip2px(270f)
+                binding.llLanguageDow.layoutParams = layoutParams
             }
     }
 
@@ -283,6 +301,9 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
 
         fun toSea() {
             binding.searchStatus = true
+            val layoutParams: ViewGroup.LayoutParams =  binding.llLanguageDow.layoutParams
+            layoutParams.height = DensityUtils.dip2px(500f)
+            binding.llLanguageDow.layoutParams = layoutParams
         }
     }
 
@@ -304,7 +325,6 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
                 allLanguageData.map {
                     it.isCheck = MlKitData.getInstance().sourceLang.value?.code ==it.code
                 }
-
             }
             2 -> {
                 binding.linLeft.background = getDrawable(R.drawable.ic_lanage_left)
@@ -322,30 +342,28 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
         }
         recentlyAdapter.notifyDataSetChanged()
         allAdapter.notifyDataSetChanged()
-//        setLanguageOptions(recentlyLanguageData[0],binding.selectedSourceLang as Int)
     }
 
     override fun onResume() {
         super.onResume()
-//        lifecycleScope.launch {
-//            delay(300)
-//            if (lifecycle.currentState != Lifecycle.State.RESUMED) {
-//                return@launch
-//            }
-//            if (App.nativeAdRefreshSt) {
-//                StLoadTranslationAd.getInstance().whetherToShowSt = false
-//                if (StLoadTranslationAd.getInstance().appAdDataSt != null) {
-//                    KLog.d(Constant.logTagSt, "onResume------>1")
-//                    StLoadTranslationAd.getInstance()
-//                        .setDisplayLanguageNativeAdSt(this@LanguageActivity, binding)
-//                } else {
-//                    binding.languageAdSt = false
-//                    KLog.d(Constant.logTagSt, "onResume------>2")
-//                    StLoadTranslationAd.getInstance().advertisementLoadingSt(this@LanguageActivity)
-//                    initLanguageAd()
-//                }
-//            }
-//        }
+        lifecycleScope.launch {
+            delay(300)
+            if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+                return@launch
+            }
+            if (App.nativeAdRefreshSt) {
+                AdBase.getLanguageInstance().whetherToShowSt = false
+                if (AdBase.getTranslationInstance().appAdDataSt != null) {
+                    KLog.d(Constant.logTagSt, "onResume------>1")
+                    StLoadLanguageAd.setDisplayLanguageNativeAdSt(this@LanguageActivity, binding)
+                } else {
+                    binding.languageAdSt= false
+                    KLog.d(Constant.logTagSt, "onResume------>2")
+                    AdBase.getLanguageInstance().advertisementLoadingSt(this@LanguageActivity)
+                    initLanguageAd()
+                }
+            }
+        }
     }
 
 

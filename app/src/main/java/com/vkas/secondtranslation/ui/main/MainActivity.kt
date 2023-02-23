@@ -11,18 +11,32 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.vkas.secondtranslation.BR
 import com.vkas.secondtranslation.R
+import com.vkas.secondtranslation.app.App
+import com.vkas.secondtranslation.base.AdBase
 import com.vkas.secondtranslation.base.BaseActivity
 import com.vkas.secondtranslation.databinding.ActivityMainBinding
 import com.vkas.secondtranslation.event.Constant
+import com.vkas.secondtranslation.event.Constant.logTagSt
+import com.vkas.secondtranslation.stad.StLoadHomeAd
 import com.vkas.secondtranslation.ui.camare.CameraActivity
 import com.vkas.secondtranslation.ui.translation.TranslationActivity
+import com.vkas.secondtranslation.utils.KLog
 import com.vkas.secondtranslation.web.WebStActivity
 import com.xuexiang.xutil.tip.ToastUtils
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
-
+    // 是否返回刷新服务器
+    var whetherRefreshServer = false
+    private var jobNativeAdsSt: Job? = null
     override fun initContentView(savedInstanceState: Bundle?): Int {
         return R.layout.activity_main
     }
@@ -43,8 +57,24 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun initData() {
         super.initData()
+        AdBase.getHomeInstance().whetherToShowSt = false
+
+        // 初始化主页广告
+        initHomeAd()
     }
 
+    private fun initHomeAd() {
+        jobNativeAdsSt = lifecycleScope.launch {
+            while (isActive) {
+                StLoadHomeAd.setDisplayHomeNativeAdSt(this@MainActivity, binding)
+                if (AdBase.getHomeInstance().whetherToShowSt) {
+                    jobNativeAdsSt?.cancel()
+                    jobNativeAdsSt = null
+                }
+                delay(1000L)
+            }
+        }
+    }
     inner class Presenter {
         fun clickMainMenu() {}
         fun clickMain() {
@@ -155,6 +185,27 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
                     )
                 ) {
                     denyPermissionPopUp()
+                }
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(300)
+            if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+                return@launch
+            }
+            if (App.nativeAdRefreshSt) {
+                AdBase.getHomeInstance().whetherToShowSt = false
+                if (AdBase.getHomeInstance().appAdDataSt != null) {
+                    KLog.d(logTagSt, "onResume------>1")
+                    StLoadHomeAd.setDisplayHomeNativeAdSt(this@MainActivity, binding)
+                } else {
+                    binding.vpnAdSt = false
+                    KLog.d(logTagSt, "onResume------>2")
+                    AdBase.getHomeInstance().advertisementLoadingSt(this@MainActivity)
+                    initHomeAd()
                 }
             }
         }

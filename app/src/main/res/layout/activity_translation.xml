@@ -285,7 +285,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ed_translation_top_translation" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/frameLayout_ad"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_nav"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
+            <FrameLayout
+                android:id="@+id/st_ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{translationAdSt ? View.VISIBLE : View.GONE}" />
+
+            <ImageView
+                android:id="@+id/img_st_ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_translate_ad_pl"
+                android:visibility="@{translationAdSt ? View.GONE : View.VISIBLE}" />
+        </FrameLayout>
         <include
             android:id="@+id/in_translation_title_st"
             layout="@layout/layout_toolbar_st"

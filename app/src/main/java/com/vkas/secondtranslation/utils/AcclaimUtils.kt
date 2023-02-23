@@ -1,6 +1,14 @@
 package com.vkas.secondtranslation.utils
 
+import com.google.gson.reflect.TypeToken
 import com.vkas.secondtranslation.R
+import com.vkas.secondtranslation.app.App.Companion.mmkvSt
+import com.vkas.secondtranslation.event.Constant
+import com.vkas.secondtranslation.stbean.StAdBean
+import com.vkas.secondtranslation.stbean.StDetailBean
+import com.xuexiang.xui.utils.Utils
+import com.xuexiang.xutil.net.JsonUtil
+import com.xuexiang.xutil.resource.ResourceUtils
 
 object AcclaimUtils {
      val langIconMap by lazy {
@@ -14,7 +22,7 @@ object AcclaimUtils {
             put("ca", R.drawable.ad)//ANDORRA
             put("zh", R.drawable.cn)//CHINA
             put("hr", R.drawable.hr)//CROATIA
-            put("cs", R.drawable.cz)//CZECH REPUBLIC(Czechia)
+            put("cs", R.drawable.cz)//CZSTH REPUBLIC(Czechia)
             put("da", R.drawable.dk)//DENMARK
             put("nl", R.drawable.nl)//NETHERLANDS
             put("en", R.drawable.us)//UNITED STATES
@@ -25,7 +33,7 @@ object AcclaimUtils {
             put("gl", R.drawable.es)//Galician(partly SPAIN)
             put("ka", R.drawable.ge)//GEORGIA
             put("de", R.drawable.de)//GERMANY
-            put("el", R.drawable.gr)//GREECE
+            put("el", R.drawable.gr)//GRESTE
             put("gu", R.drawable.india) //Gujarati(partly INDIA)
             put("ht", R.mipmap.ic_launcher_round) //HAITIAN_CREOLE(partly Haiti)
             put("he", R.drawable.il)//ISRAEL
@@ -66,5 +74,90 @@ object AcclaimUtils {
             put("cy", R.drawable.gb)//WELSH(partly United Kingdom)
         }
     }
+
+
+    /**
+     * 广告排序
+     */
+    private fun adSortingSt(elAdBean: StAdBean): StAdBean {
+        val adBean = StAdBean()
+        adBean.st_open = sortByWeightDescending(elAdBean.st_open) { it.st_weight }.toMutableList()
+        adBean.st_back = sortByWeightDescending(elAdBean.st_back) { it.st_weight }.toMutableList()
+        adBean.st_vpn = sortByWeightDescending(elAdBean.st_vpn) { it.st_weight }.toMutableList()
+        adBean.st_result = sortByWeightDescending(elAdBean.st_result) { it.st_weight }.toMutableList()
+        adBean.st_connect = sortByWeightDescending(elAdBean.st_connect) { it.st_weight }.toMutableList()
+        adBean.st_show_num = elAdBean.st_show_num
+        adBean.st_click_num = elAdBean.st_click_num
+        return adBean
+    }
+    /**
+     * 根据权重降序排序并返回新的列表
+     */
+    private fun <T> sortByWeightDescending(list: List<T>, getWeight: (T) -> Int): List<T> {
+        return list.sortedByDescending(getWeight)
+    }
+
+    /**
+     * 取出排序后的广告ID
+     */
+    fun takeSortedAdIDSt(index: Int, elAdDetails: MutableList<StDetailBean>): String {
+        return elAdDetails.getOrNull(index)?.st_id ?: ""
+    }
+
+    /**
+     * 获取广告服务器数据
+     */
+    fun getAdServerDataSt(): StAdBean {
+        val serviceData: StAdBean =
+            if (Utils.isNullOrEmpty(mmkvSt.decodeString(Constant.ADVERTISING_ST_DATA))) {
+                JsonUtil.fromJson(
+                    ResourceUtils.readStringFromAssert(Constant.AD_LOCAL_FILE_NAME_ST),
+                    object : TypeToken<
+                            StAdBean?>() {}.type
+                )
+            } else {
+                JsonUtil.fromJson(
+                    mmkvSt.decodeString(Constant.ADVERTISING_ST_DATA),
+                    object : TypeToken<StAdBean?>() {}.type
+                )
+            }
+        return adSortingSt(serviceData)
+    }
+
+    /**
+     * 是否达到阀值
+     */
+    fun isThresholdReached(): Boolean {
+        val clicksCount = mmkvSt.decodeInt(Constant.CLICKS_ST_COUNT, 0)
+        val showCount = mmkvSt.decodeInt(Constant.SHOW_ST_COUNT, 0)
+        KLog.e("TAG", "clicksCount=${clicksCount}, showCount=${showCount}")
+        KLog.e(
+            "TAG",
+            "st_click_num=${getAdServerDataSt().st_click_num}, getAdServerData().st_show_num=${getAdServerDataSt().st_show_num}"
+        )
+        if (clicksCount >= getAdServerDataSt().st_click_num || showCount >= getAdServerDataSt().st_show_num) {
+            return true
+        }
+        return false
+    }
+
+    /**
+     * 记录广告展示次数
+     */
+    fun recordNumberOfAdDisplaysSt() {
+        var showCount = mmkvSt.decodeInt(Constant.SHOW_ST_COUNT, 0)
+        showCount++
+        MmkvUtils.set(Constant.SHOW_ST_COUNT, showCount)
+    }
+
+    /**
+     * 记录广告点击次数
+     */
+    fun recordNumberOfAdClickSt() {
+        var clicksCount = mmkvSt.decodeInt(Constant.CLICKS_ST_COUNT, 0)
+        clicksCount++
+        MmkvUtils.set(Constant.CLICKS_ST_COUNT, clicksCount)
+    }
+
 
 }

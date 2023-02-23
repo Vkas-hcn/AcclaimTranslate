@@ -14,12 +14,15 @@ import com.vkas.secondtranslation.BR
 import com.vkas.secondtranslation.BuildConfig
 import com.vkas.secondtranslation.R
 import com.vkas.secondtranslation.app.App
+import com.vkas.secondtranslation.base.AdBase
 import com.vkas.secondtranslation.base.BaseActivity
 import com.vkas.secondtranslation.base.BaseViewModel
 import com.vkas.secondtranslation.databinding.ActivityStartBinding
 import com.vkas.secondtranslation.event.Constant
 import com.vkas.secondtranslation.event.Constant.logTagSt
+import com.vkas.secondtranslation.stad.StLoadOpenAd
 import com.vkas.secondtranslation.ui.main.MainActivity
+import com.vkas.secondtranslation.utils.AcclaimUtils.isThresholdReached
 import com.vkas.secondtranslation.utils.KLog
 import com.vkas.secondtranslation.utils.MmkvUtils
 import com.xuexiang.xui.widget.progress.HorizontalProgressView
@@ -56,7 +59,7 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
     override fun initData() {
         super.initData()
         binding.pbStartSt.setProgressViewUpdateListener(this)
-        binding.pbStartSt.setProgressDuration(2000)
+        binding.pbStartSt.setProgressDuration(10000)
         binding.pbStartSt.startProgressAnimation()
         liveEventBusSt()
 //        lifecycleScope.launch(Dispatchers.IO) {
@@ -95,10 +98,10 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
             preloadedAdvertisement()
             val auth = Firebase.remoteConfig
             auth.fetchAndActivate().addOnSuccessListener {
-                MmkvUtils.set(Constant.PROFILE_ST_DATA, auth.getString("ec_ser"))
-                MmkvUtils.set(Constant.PROFILE_ST_DATA_FAST, auth.getString("ec_smar"))
-                MmkvUtils.set(Constant.AROUND_ST_FLOW_DATA, auth.getString("ecAroundFlow_Data"))
-                MmkvUtils.set(Constant.ADVERTISING_ST_DATA, auth.getString("ec_ad"))
+                MmkvUtils.set(Constant.PROFILE_ST_DATA, auth.getString("st_ser"))
+                MmkvUtils.set(Constant.PROFILE_ST_DATA_FAST, auth.getString("st_smar"))
+                MmkvUtils.set(Constant.AROUND_ST_FLOW_DATA, auth.getString("stAroundFlow_Data"))
+                MmkvUtils.set(Constant.ADVERTISING_ST_DATA, auth.getString("st_ad"))
 
             }
         }
@@ -138,64 +141,64 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
     /**
      * 加载广告
      */
-//    private fun loadAdvertisement() {
-//        // 开屏
-//        AdBase.getOpenInstance().adIndexSt = 0
-//        AdBase.getOpenInstance().advertisementLoadingSt(this)
-//        rotationDisplayOpeningAdSt()
-//        // 首页原生
-//        AdBase.getHomeInstance().adIndexSt = 0
-//        AdBase.getHomeInstance().advertisementLoadingSt(this)
-//        // 结果页原生
-//        AdBase.getResultInstance().adIndexSt = 0
-//        AdBase.getResultInstance().advertisementLoadingSt(this)
-//        // 连接插屏
-//        AdBase.getConnectInstance().adIndexSt = 0
-//        AdBase.getConnectInstance().advertisementLoadingSt(this)
-//        // 服务器页插屏
-//        AdBase.getBackInstance().adIndexSt = 0
-//        AdBase.getBackInstance().advertisementLoadingSt(this)
-//    }
+    private fun loadAdvertisement() {
+        // 开屏
+        AdBase.getOpenInstance().adIndexSt = 0
+        AdBase.getOpenInstance().advertisementLoadingSt(this)
+        rotationDisplayOpeningAdSt()
+        // 首页原生
+        AdBase.getHomeInstance().adIndexSt = 0
+        AdBase.getHomeInstance().advertisementLoadingSt(this)
+        // 翻译原生
+        AdBase.getTranslationInstance().adIndexSt = 0
+        AdBase.getTranslationInstance().advertisementLoadingSt(this)
+        // 语言原生
+        AdBase.getLanguageInstance().adIndexSt = 0
+        AdBase.getLanguageInstance().advertisementLoadingSt(this)
+        // 服务器页插屏
+        AdBase.getBackInstance().adIndexSt = 0
+        AdBase.getBackInstance().advertisementLoadingSt(this)
+    }
 
     /**
      * 轮训展示开屏广告
      */
-//    private fun rotationDisplayOpeningAdSt() {
-//        jobOpenAdsSt = lifecycleScope.launch {
-//            try {
-//                withTimeout(10000L) {
-//                    delay(1000L)
-//                    while (isActive) {
-//                        val showState = StLoadOpenAd
-//                            .displayOpenAdvertisementSt(this@StartStActivity)
-//                        if (showState) {
-//                            jobOpenAdsSt?.cancel()
-//                            jobOpenAdsSt = null
-//                        }
-//                        delay(1000L)
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                KLog.e("TimeoutCancellationException I'm sleeping $e")
-//                jumpPage()
-//            }
-//        }
-//    }
+    private fun rotationDisplayOpeningAdSt() {
+        jobOpenAdsSt = lifecycleScope.launch {
+            try {
+                withTimeout(10000L) {
+                    delay(1000L)
+                    while (isActive) {
+                        val showState = StLoadOpenAd
+                            .displayOpenAdvertisementSt(this@StartActivity)
+                        if (showState) {
+                            jobOpenAdsSt?.cancel()
+                            jobOpenAdsSt = null
+                        }
+                        delay(1000L)
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                KLog.e("TimeoutCancellationException I'm sleeping $e")
+                jumpPage()
+            }
+        }
+    }
 
     /**
      * 预加载广告
      */
     private fun preloadedAdvertisement() {
-//        App.isAppOpenSameDaySt()
-//        if (isThresholdReached()) {
-//            KLog.d(logTagSt, "广告达到上线")
+        App.isAppOpenSameDaySt()
+        if (isThresholdReached()) {
+            KLog.d(logTagSt, "广告达到上线")
             lifecycleScope.launch {
                 delay(2000L)
                 liveJumpHomePage.postValue(true)
             }
-//        } else {
-//            loadAdvertisement()
-//        }
+        } else {
+            loadAdvertisement()
+        }
     }
 
     override fun onHorizontalProgressStart(view: View?) {

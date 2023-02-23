@@ -1,0 +1,104 @@
+{
+  "st_show_num": 400,
+  "st_click_num": 5,
+  "st_open": [
+    {
+      "st_type": "open",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/3419835294XXX",
+      "st_weight": 3
+    },
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1033173712",
+      "st_weight": 1
+    },
+    {
+      "st_type": "open",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/3419835294",
+      "st_weight": 2
+    }
+  ],
+  "st_back": [
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/8691691433",
+      "st_weight": 1
+    },
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1033173712XX",
+      "st_weight": 3
+    },
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1033173712",
+      "st_weight": 2
+    }
+  ],
+  "st_vpn": [
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1044960115",
+      "st_weight": 1
+    },
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/2247696110XX",
+      "st_weight": 3
+    },
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/2247696110",
+      "st_weight": 2
+    }
+  ],
+  "st_result": [
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1044960115",
+      "st_weight": 2
+    },
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/2247696110XX",
+      "st_weight": 3
+    },
+    {
+      "st_type": "primitive",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/2247696110",
+      "st_weight": 1
+    }
+  ],
+  "st_connect": [
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/8691691433",
+      "st_weight": 2
+    },
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1033173712XX",
+      "st_weight": 3
+    },
+    {
+      "st_type": "screen",
+      "st_platform": "admob",
+      "st_id": "ca-app-pub-3940256099942544/1033173712",
+      "st_weight": 1
+    }
+  ]
+}

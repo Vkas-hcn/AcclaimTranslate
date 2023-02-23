@@ -28,8 +28,10 @@ import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.*
 import com.vkas.secondtranslation.R
 import com.vkas.secondtranslation.event.Constant
+import com.xuexiang.xutil.tip.ToastUtils
 import java.security.MessageDigest
 import java.util.*
+
 class MlKitData {
     companion object {
         fun getInstance() = InstanceHelper.mlKitData
@@ -41,11 +43,14 @@ class MlKitData {
         val mlKitData = MlKitData()
 
     }
+
     //同步
     private val modelManager: RemoteModelManager = RemoteModelManager.getInstance()
     val availableModels = MutableLiveData<List<String>>()
+
     // Gets a list of all available translation languages.
-    val availableLanguages: MutableList<Language> = TranslateLanguage.getAllLanguages().map { Language(it) } as MutableList<Language>
+    val availableLanguages: MutableList<Language> =
+        TranslateLanguage.getAllLanguages().map { Language(it) } as MutableList<Language>
     val sourceLang = MutableLiveData<Language>()
     val targetLang = MutableLiveData<Language>()
     val sourceText = MutableLiveData<String>()
@@ -57,6 +62,7 @@ class MlKitData {
             override fun create(options: TranslatorOptions): Translator {
                 return Translation.getClient(options)
             }
+
             override fun entryRemoved(
                 evicted: Boolean,
                 key: TranslatorOptions,
@@ -66,10 +72,11 @@ class MlKitData {
                 oldValue.close()
             }
         }
-    fun translate(text:String): Task<String> {
+
+    fun translate(text: String): Task<String> {
         val source = sourceLang.value
         val target = targetLang.value
-        KLog.e("TAG","识别内容==${text}")
+        KLog.e("TAG", "识别内容==${text}")
         if (source == null || target == null || text.isEmpty()) {
             return Tasks.forResult("")
         }
@@ -81,19 +88,21 @@ class MlKitData {
                 .setTargetLanguage(targetLangCode)
                 .build()
         return translators[options].translate(text).addOnCompleteListener {
-            it.addOnSuccessListener { text->
-                KLog.e("TAG","翻译成功=${text}")
+            it.addOnSuccessListener { text ->
+                KLog.e("TAG", "翻译成功=${text}")
                 sourceText.postValue(text)
             }
-            it.addOnFailureListener {error->
-                KLog.e("TAG","翻译失败=${error}")
+            it.addOnFailureListener { error ->
+                KLog.e("TAG", "翻译失败=${error}")
                 sourceText.postValue(R.string.translate_failed.toString())
             }
         }
     }
+
     private fun getModel(languageCode: String): TranslateRemoteModel {
         return TranslateRemoteModel.Builder(languageCode).build()
     }
+
     // Starts downloading a remote model for local translation.
     internal fun downloadLanguage(language: Language) {
         val model = getModel(TranslateLanguage.fromLanguageTag(language.code)!!)
@@ -106,12 +115,13 @@ class MlKitData {
             }
         }
         downloadTask =
-            modelManager.download(model, DownloadConditions.Builder().build()).addOnSuccessListener {
-                pendingDownloads.remove(language.code)
-                fetchDownloadedModels()
-                language.downloadStatus =2
-            }.addOnFailureListener {
-                language.downloadStatus =0
+            modelManager.download(model, DownloadConditions.Builder().build())
+                .addOnSuccessListener {
+                    pendingDownloads.remove(language.code)
+                    fetchDownloadedModels()
+                    language.downloadStatus = 2
+                }.addOnFailureListener {
+                language.downloadStatus = 0
             }.addOnCompleteListener {
                 LiveEventBus.get<Language>(Constant.DOWNLOADING_ST)
                     .post(language)
@@ -119,25 +129,28 @@ class MlKitData {
 
         pendingDownloads[language.code] = downloadTask
     }
+
     // Deletes a locally stored translation model.
     internal fun deleteLanguage(language: Language) {
         val model = getModel(TranslateLanguage.fromLanguageTag(language.code)!!)
-        modelManager.deleteDownloadedModel(model).addOnCompleteListener { fetchDownloadedModels()
+        modelManager.deleteDownloadedModel(model).addOnCompleteListener {
+            fetchDownloadedModels()
         }
         pendingDownloads.remove(language.code)
     }
-    fun fetchDownloadedModels() {
-        modelManager.getDownloadedModels(TranslateRemoteModel::class.java).addOnSuccessListener {
-                remoteModels ->
-            remoteModels?.forEach {
-                KLog.e("TAG","remoteModels=${Locale(it.language).displayLanguage}")
-            }
-            availableModels.value = remoteModels.sortedBy { it.language }.map { it.language }
-            KLog.e("TAG","availableModels.value=${availableModels.value}")
 
-        }
+    fun fetchDownloadedModels() {
+        modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
+            .addOnSuccessListener { remoteModels ->
+                remoteModels?.forEach {
+                    KLog.e("TAG", "remoteModels=${Locale(it.language).displayLanguage}")
+                }
+                availableModels.value = remoteModels.sortedBy { it.language }.map { it.language }
+                KLog.e("TAG", "availableModels.value=${availableModels.value}")
+
+            }
         availableModels.value?.map {
-            KLog.e("TAG","availableModels=${it}")
+            KLog.e("TAG", "availableModels=${it}")
         }
     }
 
@@ -154,6 +167,7 @@ class MlKitData {
                 (outWidth * 0.5).toInt(), (outHeight * 0.5).toInt()
             )
         }
+
         override fun updateDiskCacheKey(messageDigest: MessageDigest) {}
     }
 

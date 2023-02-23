@@ -30,10 +30,13 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.vkas.secondtranslation.BR
 import com.vkas.secondtranslation.R
 import com.vkas.secondtranslation.app.App
+import com.vkas.secondtranslation.base.AdBase
 import com.vkas.secondtranslation.base.BaseActivity
 import com.vkas.secondtranslation.databinding.ActivityCameraxBinding
 import com.vkas.secondtranslation.event.Constant
+import com.vkas.secondtranslation.stad.StLoadBackAd
 import com.vkas.secondtranslation.ui.language.LanguageActivity
+import com.vkas.secondtranslation.utils.AcclaimUtils
 import com.vkas.secondtranslation.utils.CopyUtils
 import com.vkas.secondtranslation.utils.KLog
 import com.vkas.secondtranslation.utils.MlKitData
@@ -76,55 +79,34 @@ class CameraActivity : BaseActivity<ActivityCameraxBinding, CameraXViewModel>() 
         ptLoadingDialog = StLoadingDialog(this)
         viewModel.initializeLanguageBox()
         MlKitData.getInstance().fetchDownloadedModels()
+        AdBase.getBackInstance().advertisementLoadingSt(this)
         updateLanguageItem()
-        initCameraX()
+//        initCameraX()
     }
 
     private fun liveEventBusReceive() {
         //插屏关闭后跳转
-//        LiveEventBus
-//            .get(Constant.PLUG_ST_TRANSLATION_SHOW, Boolean::class.java)
-//            .observeForever {
-//                StLoadBackAd.getInstance().advertisementLoadingSt(this)
-////                if(!it){
-//                finish()
-////                }
-//            }
+        LiveEventBus
+            .get(Constant.PLUG_ST_BACK_AD_SHOW, Boolean::class.java)
+            .observeForever {
+                finish()
+            }
     }
 
     /**
      * 返回主页
      */
-//    private fun returnToHomePage() {
-//        App.isAppOpenSameDaySt()
-//        if (PixelUtils.isThresholdReached()) {
-//            KLog.d(Constant.logTagSt, "广告达到上线")
-//            finish()
-//            return
-//        }
-//        StLoadBackAd.getInstance().advertisementLoadingSt(this)
-//        jobBack = GlobalScope.launch {
-//            try {
-//                withTimeout(3000L) {
-//                    while (isActive) {
-//                        val showState =
-//                            StLoadBackAd.getInstance()
-//                                .displayBackAdvertisementSt(this@CameraXActivity)
-//                        if (showState) {
-//                            jobBack?.cancel()
-//                            jobBack = null
-//                        }
-//                        delay(1000L)
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                KLog.d(Constant.logTagSt, "ocr-back---插屏超时")
-//                if (jobBack != null) {
-//                    finish()
-//                }
-//            }
-//        }
-//    }
+    private fun returnToHomePage() {
+        App.isAppOpenSameDaySt()
+        if (AcclaimUtils.isThresholdReached()) {
+            KLog.d(Constant.logTagSt, "广告达到上线")
+            finish()
+            return
+        }
+        if(!StLoadBackAd.displayBackAdvertisementSt(this)){
+            finish()
+        }
+    }
 
     override fun initViewObservable() {
         super.initViewObservable()
@@ -141,8 +123,7 @@ class CameraActivity : BaseActivity<ActivityCameraxBinding, CameraXViewModel>() 
     inner class Presenter {
         fun toReturn() {
             if (binding.conCamera.isVisible) {
-//                returnToHomePage()
-                finish()
+                returnToHomePage()
             } else {
                 binding.conShot.visibility = View.GONE
                 binding.conCamera.visibility = View.VISIBLE
@@ -209,7 +190,8 @@ class CameraActivity : BaseActivity<ActivityCameraxBinding, CameraXViewModel>() 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             cameraProvider = cameraProviderFuture.get()
-            cameraProvider?.let { bindPreview(it) }
+            cameraProvider?.let {
+                bindPreview(it) }
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -329,6 +311,21 @@ class CameraActivity : BaseActivity<ActivityCameraxBinding, CameraXViewModel>() 
         binding.conCamera.visibility = View.GONE
     }
 
+//    override fun onStart() {
+//        super.onStart()
+//        initCameraX()
+//    }
+
+    override fun onResume() {
+        super.onResume()
+        initCameraX()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cameraProvider?.unbindAll()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -352,7 +349,7 @@ class CameraActivity : BaseActivity<ActivityCameraxBinding, CameraXViewModel>() 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish()
+            returnToHomePage()
         }
         return true
     }

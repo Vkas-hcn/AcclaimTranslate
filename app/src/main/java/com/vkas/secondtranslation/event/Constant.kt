@@ -57,11 +57,11 @@ object Constant {
     // 未连接返回
     const val NOT_CONNECTED_ST_RETURN="notConnectedStReturn"
     // 广告本地文件名
-    const val AD_LOCAL_FILE_NAME_EC = "ecAdData.json"
+    const val AD_LOCAL_FILE_NAME_ST = "stAdData.json"
     // vpn本地文件名
-    const val VPN_LOCAL_FILE_NAME_EC = "ecVpnData.json"
+    const val VPN_LOCAL_FILE_NAME_ST = "ecVpnData.json"
     // Fast本地文件名
-    const val FAST_LOCAL_FILE_NAME_EC = "ecVpnFastData.json"
+    const val FAST_LOCAL_FILE_NAME_ST = "ecVpnFastData.json"
 
 
 

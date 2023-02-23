@@ -4,6 +4,7 @@
     package="com.vkas.secondtranslation">
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".app.App"
         android:allowBackup="true"
