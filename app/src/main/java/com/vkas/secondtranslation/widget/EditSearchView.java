@@ -1,5 +1,6 @@
 package com.vkas.secondtranslation.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
@@ -24,6 +26,7 @@ import androidx.lifecycle.Observer;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.vkas.secondtranslation.R;
 import com.vkas.secondtranslation.event.Constant;
+import com.xuexiang.xui.utils.KeyboardUtils;
 
 public class EditSearchView extends LinearLayout {
 
@@ -69,15 +72,25 @@ public class EditSearchView extends LinearLayout {
         cancel = view.findViewById(R.id.tv_cancel);
         this.setBackgroundResource(R.color.white);
         et_txt = view.findViewById(R.id.view_edit);
+//        et_txt.requestFocus();
         et_txt.setOnEditorActionListener(new SearchClickEvent());
         et_txt.addTextChangedListener(textWatcher);
         cancel.setOnClickListener(new SearchCancelClickEvent());
+
     }
 
     public void setEditHintTxt(String msg) {
         this.et_txt.setHint(msg);
     }
-
+    public void setEditForce() {
+        et_txt.postDelayed(() -> {
+            et_txt.requestFocus();
+            KeyboardUtils.showSoftInputForce((Activity) context);
+        }, 200);
+    }
+    public void setEditHideFocus() {
+        KeyboardUtils.hideSoftInputClearFocus(et_txt);
+    }
 
     public void setEditSearchListener(EditSearchListener listener) {
         this.listener = listener;
@@ -96,9 +109,9 @@ public class EditSearchView extends LinearLayout {
 
         @Override
         public void onClick(View view) {
+            et_txt.setText("");
             LiveEventBus.get(Constant.SEARCH_BAR_HIDDEN).post(true);
         }
-
     }
 
     final class SearchClickEvent implements TextView.OnEditorActionListener {
@@ -113,7 +126,6 @@ public class EditSearchView extends LinearLayout {
             return false;
         }
     }
-
 
     final TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -132,11 +144,17 @@ public class EditSearchView extends LinearLayout {
         }
     };
 
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
     }
 
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if(visibility != View.VISIBLE){
+            KeyboardUtils.hideSoftInputClearFocus(et_txt);
+        }
+    }
 }
 

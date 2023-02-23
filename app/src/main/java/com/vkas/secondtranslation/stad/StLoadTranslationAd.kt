@@ -32,8 +32,8 @@ object StLoadTranslationAd {
      * 加载translation原生广告
      */
     fun loadTranslationAdvertisementSt(context: Context, adData: StAdBean) {
-        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_vpn)
-        KLog.d(logTagSt, "translation--原生广告id=$id;权重=${adData.st_vpn.getOrNull(adBase.adIndexSt)?.st_weight}")
+        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_translation)
+        KLog.d(logTagSt, "translation--原生广告id=$id;权重=${adData.st_translation.getOrNull(adBase.adIndexSt)?.st_weight}")
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
@@ -64,7 +64,7 @@ object StLoadTranslationAd {
                 adBase.appAdDataSt = null
                 KLog.d(logTagSt, "translation--加载vpn原生加载失败: $error")
 
-                if (adBase.adIndexSt < adData.st_vpn.size - 1) {
+                if (adBase.adIndexSt < adData.st_translation.size - 1) {
                     adBase.adIndexSt++
                     loadTranslationAdvertisementSt(context,adData)
                 }else{

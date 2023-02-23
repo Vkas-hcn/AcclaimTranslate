@@ -54,7 +54,7 @@
             android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/in_translation_title_st">
+            app:layout_constraintTop_toBottomOf="@+id/fl_title_bar">
 
             <LinearLayout
                 android:id="@+id/lin_left"
@@ -66,11 +66,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/frameLayout"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <com.xuexiang.xui.widget.imageview.RadiusImageView
                     android:id="@+id/img_flag_left"
-                    app:riv_is_circle="true"
                     android:layout_width="28dp"
-                    android:layout_height="28dp"/>
+                    android:layout_height="28dp"
+                    app:riv_is_circle="true" />
+
                 <TextView
                     android:id="@+id/tv_language_left"
                     android:layout_width="wrap_content"
@@ -113,17 +115,19 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/frameLayout"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <com.xuexiang.xui.widget.imageview.RadiusImageView
                     android:id="@+id/img_flag_right"
-                    app:riv_is_circle="true"
                     android:layout_width="28dp"
-                    android:layout_height="28dp"/>
+                    android:layout_height="28dp"
+                    app:riv_is_circle="true" />
+
                 <TextView
                     android:id="@+id/tv_language_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
                     android:layout_marginStart="8dp"
+                    android:drawablePadding="10dp"
                     android:gravity="center"
                     android:text="@string/english"
                     android:textColor="#FFFFFFFF"
@@ -152,15 +156,15 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_search"
                 android:drawablePadding="9dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
                 android:gravity="center_vertical"
+                android:onClick="@{() ->presenter.toSea()}"
+                android:paddingStart="10dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="12dp"
                 android:text="@string/search"
                 android:textColor="#FF3F4867"
                 android:textSize="15sp"
-                android:onClick="@{() ->presenter.toSea()}"
                 android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
                 app:drawableStartCompat="@drawable/ic_baseline_search_24" />
 
@@ -243,10 +247,25 @@
                 android:visibility="@{languageAdSt ? View.GONE : View.VISIBLE}" />
         </FrameLayout>
 
-        <include
-            android:id="@+id/in_translation_title_st"
-            binding:searchStatus="@{searchStatus}"
-            layout="@layout/layout_toolbar_st" />
+        <FrameLayout
+            android:id="@+id/fl_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/in_translation_title_st"
+                layout="@layout/layout_toolbar_st"
+                android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}" />
+
+            <include
+                android:id="@+id/in_translation_search_title_st"
+                layout="@layout/layout_toolbar_search_st"
+                android:visibility="@{searchStatus ? View.VISIBLE : View.GONE}" />
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

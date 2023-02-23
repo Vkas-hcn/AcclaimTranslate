@@ -31,8 +31,8 @@ object StLoadLanguageAd {
      * 加载language原生广告
      */
     fun loadLanguageAdvertisementSt(context: Context, adData: StAdBean) {
-        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_vpn)
-        KLog.d(logTagSt, "language--原生广告id=$id;权重=${adData.st_vpn.getOrNull(adBase.adIndexSt)?.st_weight}")
+        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_language)
+        KLog.d(logTagSt, "language--原生广告id=$id;权重=${adData.st_language.getOrNull(adBase.adIndexSt)?.st_weight}")
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
             id
@@ -62,7 +62,7 @@ object StLoadLanguageAd {
                 adBase.appAdDataSt = null
                 KLog.d(logTagSt, "language--加载vpn原生加载失败: $error")
 
-                if (adBase.adIndexSt < adData.st_vpn.size - 1) {
+                if (adBase.adIndexSt < adData.st_language.size - 1) {
                     adBase.adIndexSt++
                     loadLanguageAdvertisementSt(context,adData)
                 }else{
@@ -97,7 +97,7 @@ object StLoadLanguageAd {
                         adData.destroy()
                         return@let
                     }
-                    val adView = activity.layoutInflater.inflate(R.layout.layout_main_native_st, null) as NativeAdView
+                    val adView = activity.layoutInflater.inflate(R.layout.layout_translation_native, null) as NativeAdView
                     // 对应原生组件
                     setCorrespondingNativeComponentSt(adData, adView)
                     binding.stAdFrame.apply {

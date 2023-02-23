@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.MotionEvent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,10 +35,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import android.view.ViewGroup
-import com.xuexiang.xui.utils.ResUtils
-import com.xuexiang.xui.utils.Utils
+import com.xuexiang.xui.utils.KeyboardUtils
 import com.xuexiang.xutil.display.DensityUtils
-import com.xuexiang.xutil.tip.ToastUtils
 
 
 class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewModel>() {
@@ -64,14 +64,16 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
     override fun initToolbar() {
         super.initToolbar()
         binding.presenter = Presenter()
-        binding.inTranslationTitleSt.let {
-            it.imgBack.setOnClickListener {
-                finish()
-            }
+        binding.inTranslationTitleSt.imgBack.setOnClickListener {
+            finish()
+        }
+        binding.inTranslationSearchTitleSt.let {
             it.editSearchView.setEditSearchListener { editString ->
                 allLanguageData.forEach { all ->
                     all.searchForMatches =
-                        Locale(all.code.lowercase(Locale.getDefault())).displayLanguage.contains(
+                        Locale(all.code.lowercase(Locale.getDefault())).displayLanguage.lowercase(
+                            Locale.getDefault()
+                        ).contains(
                             editString.lowercase(Locale.getDefault())
                         )
                 }
@@ -84,7 +86,6 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
                 allAdapter.notifyDataSetChanged()
             }
         }
-
     }
 
     override fun initData() {
@@ -128,10 +129,13 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
         LiveEventBus
             .get(Constant.SEARCH_BAR_HIDDEN, Boolean::class.java)
             .observeForever {
+                allLanguageData.forEach {
+                    it.searchForMatches = true
+                }
                 binding.searchStatus = false
-                val layoutParams: ViewGroup.LayoutParams =  binding.llLanguageDow.layoutParams
-                layoutParams.height = DensityUtils.dip2px(270f)
-                binding.llLanguageDow.layoutParams = layoutParams
+                binding.inTranslationSearchTitleSt.editSearchView.setEditHideFocus()
+                setAllTranslation(270f)
+                allAdapter.notifyDataSetChanged()
             }
     }
 
@@ -175,12 +179,17 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
                 }
                 setLanguageOptions(this, binding.selectedSourceLang as Int)
             }
-            allAdapter.notifyDataSetChanged()
+            allLanguageData.forEach {
+                it.searchForMatches = true
+            }
             if (binding.searchStatus == true) {
                 binding.searchStatus = false
+                binding.inTranslationSearchTitleSt.editSearchView.setEditHideFocus()
+                setAllTranslation(270f)
             } else {
                 finish()
             }
+            recentLanguageCursor()
         }
         allAdapter.setOnItemChildClickListener { _, view, position ->
             if (view.id == R.id.img_down_state) {
@@ -220,7 +229,7 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
             recentlyLanguageData.removeAt(recentlyLanguageData.size - 1)
         }
         allLanguageData.map { it.isCheck = false }
-        language.isCheck=true
+        language.isCheck = true
         recentlyLanguageData.getOrNull(0)?.isCheck = true
         MmkvUtils.set(Constant.RECENT_DATA, JsonUtil.toJson(recentlyLanguageData))
         updateLanguageItem()
@@ -301,9 +310,8 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
 
         fun toSea() {
             binding.searchStatus = true
-            val layoutParams: ViewGroup.LayoutParams =  binding.llLanguageDow.layoutParams
-            layoutParams.height = DensityUtils.dip2px(500f)
-            binding.llLanguageDow.layoutParams = layoutParams
+            binding.inTranslationSearchTitleSt.editSearchView.setEditForce()
+            setAllTranslation(500f)
         }
     }
 
@@ -316,32 +324,38 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
             1 -> {
                 binding.linLeft.background = getDrawable(R.drawable.ic_lanage_left_chek)
                 binding.linRight.background = getDrawable(R.drawable.ic_lanage_right)
-                recentlyLanguageData[0]= MlKitData.getInstance().sourceLang.value?.code?.let {
+                recentlyLanguageData[0] = MlKitData.getInstance().sourceLang.value?.code?.let {
                     Language(
                         it
                     )
                 }!!
-                recentlyLanguageData[0].isCheck =true
+                recentlyLanguageData[0].isCheck = true
                 allLanguageData.map {
-                    it.isCheck = MlKitData.getInstance().sourceLang.value?.code ==it.code
+                    it.isCheck = MlKitData.getInstance().sourceLang.value?.code == it.code
                 }
             }
             2 -> {
                 binding.linLeft.background = getDrawable(R.drawable.ic_lanage_left)
                 binding.linRight.background = getDrawable(R.drawable.ic_language_right_chek)
-                recentlyLanguageData[0]= MlKitData.getInstance().targetLang.value?.code?.let {
+                recentlyLanguageData[0] = MlKitData.getInstance().targetLang.value?.code?.let {
                     Language(
                         it
                     )
                 }!!
-                recentlyLanguageData[0].isCheck =true
+                recentlyLanguageData[0].isCheck = true
                 allLanguageData.map {
-                    it.isCheck = MlKitData.getInstance().targetLang.value?.code ==it.code
+                    it.isCheck = MlKitData.getInstance().targetLang.value?.code == it.code
                 }
             }
         }
         recentlyAdapter.notifyDataSetChanged()
         allAdapter.notifyDataSetChanged()
+    }
+
+    fun setAllTranslation(f: Float) {
+        val layoutParams: ViewGroup.LayoutParams = binding.llLanguageDow.layoutParams
+        layoutParams.height = DensityUtils.dip2px(f)
+        binding.llLanguageDow.layoutParams = layoutParams
     }
 
     override fun onResume() {
@@ -357,7 +371,7 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
                     KLog.d(Constant.logTagSt, "onResume------>1")
                     StLoadLanguageAd.setDisplayLanguageNativeAdSt(this@LanguageActivity, binding)
                 } else {
-                    binding.languageAdSt= false
+                    binding.languageAdSt = false
                     KLog.d(Constant.logTagSt, "onResume------>2")
                     AdBase.getLanguageInstance().advertisementLoadingSt(this@LanguageActivity)
                     initLanguageAd()
@@ -365,6 +379,4 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, TranslationViewMo
             }
         }
     }
-
-
 }

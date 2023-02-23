@@ -13,7 +13,7 @@
     <string name="share">Share</string>
     <string name="translate">Translate</string>
     <string name="english">English</string>
-    <string name="enter_here">Enter Here……</string>
+    <string name="enter_here">please enter text…</string>
     <string name="unknown_error">Unknown error occurred.</string>
     <string name="translate_failed">translate failed，please try again</string>
     <string name="recognition_failed">Recognition Failed</string>
@@ -30,7 +30,7 @@
     <string name="copy">Copy</string>
     <string name="translation_failed">Translation failed</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
-    <string name="photo_taking_failed">Photo taking failed</string>
+    <string name="photo_taking_failed">error</string>
     <string name="text_not_recognized">Text not recognized</string>
     <string name="please_enter_the_translation_content">Please enter the translation content</string>
     <string name="do_you_want_to_try_again">Do you want to try again</string>

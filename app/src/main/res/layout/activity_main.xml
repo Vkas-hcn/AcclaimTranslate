@@ -212,11 +212,11 @@
                 </FrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--            <include-->
-<!--                android:id="@+id/in_home_navigation"-->
-<!--                layout="@layout/layout_home_navigation"-->
-<!--                android:visibility="@{sidebarShowsSt ? View.VISIBLE : View.GONE}"-->
-<!--                binding:presenter="@{presenter}" />-->
+            <include
+                android:id="@+id/in_home_navigation"
+                layout="@layout/layout_home_navigation"
+                android:visibility="@{sidebarShowsSt ? View.VISIBLE : View.GONE}"
+                binding:presenter="@{presenter}" />
 
         </FrameLayout>
 

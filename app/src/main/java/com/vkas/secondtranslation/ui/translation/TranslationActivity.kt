@@ -36,6 +36,7 @@ import com.vkas.secondtranslation.stad.StLoadHomeAd
 import com.vkas.secondtranslation.stad.StLoadTranslationAd
 import com.vkas.secondtranslation.utils.AcclaimUtils
 import com.vkas.secondtranslation.utils.CopyUtils
+import com.xuexiang.xui.utils.KeyboardUtils
 import kotlinx.coroutines.isActive
 
 
@@ -62,6 +63,7 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
             it.imgBack.setOnClickListener {
                 if (binding.isTranslationEdit == true) {
                     binding.isTranslationEdit = false
+                    KeyboardUtils.hideSoftInput(binding.edTranslationTopTranslation)
                 } else {
                     returnToHomePage()
                 }
@@ -134,6 +136,7 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
             binding.edTranslationDown.setText(it)
             ptLoadingDialog.dismiss()
             binding.isTranslationEdit = false
+            KeyboardUtils.hideSoftInput(binding.edTranslationTopTranslation)
         })
     }
 
@@ -212,6 +215,13 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
 
         fun toTranslationPage() {
             binding.isTranslationEdit = true
+            binding.edTranslationTopTranslation.let {
+                it.isFocusable = true
+                it.isFocusableInTouchMode = true
+                it.requestFocus()
+                it.requestFocusFromTouch()
+                KeyboardUtils.showSoftInputForce(this@TranslationActivity)
+            }
         }
         fun toCopyTxt():Boolean{
             if (binding.edTranslationDown.text.isNullOrEmpty()) {
@@ -241,6 +251,11 @@ class TranslationActivity : BaseActivity<ActivityTranslationBinding, Translation
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        KeyboardUtils.hideSoftInput(binding.edTranslationTopTranslation)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

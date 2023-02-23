@@ -33,6 +33,7 @@ class WebStActivity : BaseActivity<ActivityWebBinding, BaseViewModel>() {
         binding.webTitleSt.imgBack.setOnClickListener {
             finish()
         }
+        binding.webTitleSt.tvTitle.text = getString(R.string.privacy_policy)
     }
 
     override fun initData() {

@@ -32,7 +32,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.3">
+                app:layout_constraintVertical_bias="0.1">
 
                 <TextView
                     android:id="@+id/tv_contact_us_pt"

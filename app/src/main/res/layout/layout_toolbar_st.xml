@@ -3,12 +3,6 @@
     xmlns:binding="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View" />
-
-        <variable
-            name="searchStatus"
-            type="Boolean"
-            android:value="false" />
     </data>
 
     <FrameLayout
@@ -29,8 +23,6 @@
             binding:contentInsetStart="0dp">
 
             <RelativeLayout
-                android:visibility="@{searchStatus ? View.GONE : View.VISIBLE}"
-
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -53,12 +45,6 @@
                     android:textColor="#FFFEFF"
                     android:textSize="16sp" />
             </RelativeLayout>
-
-            <com.vkas.secondtranslation.widget.EditSearchView
-                android:id="@+id/editSearchView"
-                android:visibility="@{searchStatus ? View.VISIBLE : View.GONE}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
         </androidx.appcompat.widget.Toolbar>
     </FrameLayout>

@@ -6,9 +6,9 @@ import androidx.annotation.Keep
 data class StAdBean (
     var st_open: MutableList<StDetailBean> = ArrayList(),
     var st_back: MutableList<StDetailBean> = ArrayList(),
-    var st_vpn: MutableList<StDetailBean> = ArrayList(),
-    var st_result: MutableList<StDetailBean> = ArrayList(),
-    var st_connect: MutableList<StDetailBean> = ArrayList(),
+    var st_home: MutableList<StDetailBean> = ArrayList(),
+    var st_translation: MutableList<StDetailBean> = ArrayList(),
+    var st_language: MutableList<StDetailBean> = ArrayList(),
 
     var st_click_num: Int = 0,
     var st_show_num: Int = 0

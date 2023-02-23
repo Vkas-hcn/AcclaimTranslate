@@ -122,10 +122,10 @@ class AdBase {
                 return "home"
             }
             3 -> {
-                return "result"
+                return "translation"
             }
             4 -> {
-                return "connect"
+                return "language"
             }
             5 -> {
                 return "back"

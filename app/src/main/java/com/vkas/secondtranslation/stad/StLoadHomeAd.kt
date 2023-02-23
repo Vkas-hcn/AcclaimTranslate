@@ -31,8 +31,8 @@ object StLoadHomeAd {
      * 加载vpn原生广告
      */
     fun loadHomeAdvertisementSt(context: Context, adData: StAdBean) {
-        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_vpn)
-        KLog.d(logTagSt, "home---原生广告id=$id;权重=${adData.st_vpn.getOrNull(adBase.adIndexSt)?.st_weight}")
+        val id = takeSortedAdIDSt(adBase.adIndexSt, adData.st_home)
+        KLog.d(logTagSt, "home---原生广告id=$id;权重=${adData.st_home.getOrNull(adBase.adIndexSt)?.st_weight}")
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
@@ -63,7 +63,7 @@ object StLoadHomeAd {
                 adBase.appAdDataSt = null
                 KLog.d(logTagSt, "home---加载vpn原生加载失败: $error")
 
-                if (adBase.adIndexSt < adData.st_vpn.size - 1) {
+                if (adBase.adIndexSt < adData.st_home.size - 1) {
                     adBase.adIndexSt++
                     loadHomeAdvertisementSt(context,adData)
                 }else{

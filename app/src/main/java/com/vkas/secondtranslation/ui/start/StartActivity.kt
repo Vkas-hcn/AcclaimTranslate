@@ -101,7 +101,7 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
                 MmkvUtils.set(Constant.PROFILE_ST_DATA, auth.getString("st_ser"))
                 MmkvUtils.set(Constant.PROFILE_ST_DATA_FAST, auth.getString("st_smar"))
                 MmkvUtils.set(Constant.AROUND_ST_FLOW_DATA, auth.getString("stAroundFlow_Data"))
-                MmkvUtils.set(Constant.ADVERTISING_ST_DATA, auth.getString("st_ad"))
+                MmkvUtils.set(Constant.ADVERTISING_ST_DATA, auth.getString("STAD_Data"))
 
             }
         }
@@ -167,13 +167,15 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
         jobOpenAdsSt = lifecycleScope.launch {
             try {
                 withTimeout(10000L) {
-                    delay(1000L)
+                    delay(3000L)
                     while (isActive) {
                         val showState = StLoadOpenAd
-                            .displayOpenAdvertisementSt(this@StartActivity)
+                            .judgeConditionsOpenAd(this@StartActivity)
                         if (showState) {
                             jobOpenAdsSt?.cancel()
                             jobOpenAdsSt = null
+                            binding.pbStartSt.stopProgressAnimation()
+                            binding.pbStartSt.progress = 100F
                         }
                         delay(1000L)
                     }
@@ -193,7 +195,9 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
         if (isThresholdReached()) {
             KLog.d(logTagSt, "广告达到上线")
             lifecycleScope.launch {
-                delay(2000L)
+                delay(3000L)
+                binding.pbStartSt.stopProgressAnimation()
+                binding.pbStartSt.progress = 100F
                 liveJumpHomePage.postValue(true)
             }
         } else {
@@ -205,9 +209,15 @@ class StartActivity : BaseActivity<ActivityStartBinding, BaseViewModel>(),
     }
 
     override fun onHorizontalProgressUpdate(view: View?, progress: Float) {
+
     }
 
     override fun onHorizontalProgressFinished(view: View?) {
+        App.isAppOpenSameDaySt()
+        if (!isThresholdReached()) {
+            StLoadOpenAd
+                .displayOpenAdvertisementSt(this@StartActivity)
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

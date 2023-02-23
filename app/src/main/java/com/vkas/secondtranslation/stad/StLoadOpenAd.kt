@@ -131,15 +131,14 @@ object StLoadOpenAd {
     /**
      * 展示Open广告
      */
-    fun displayOpenAdvertisementSt(activity: AppCompatActivity): Boolean {
-
+    fun displayOpenAdvertisementSt(activity: AppCompatActivity) {
         if (adBase.appAdDataSt == null) {
             KLog.d(logTagSt, "open---开屏广告加载中。。。")
-            return false
+            return
         }
         if (adBase.whetherToShowSt || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
             KLog.d(logTagSt, "open---前一个开屏广告展示中或者生命周期不对")
-            return false
+            return
         }
         if (adBase.appAdDataSt is AppOpenAd) {
             advertisingOpenCallbackSt()
@@ -147,6 +146,19 @@ object StLoadOpenAd {
         } else {
             startInsertScreenAdCallbackSt()
             (adBase.appAdDataSt as InterstitialAd).show(activity)
+        }
+    }
+    /**
+     * 判断open广告展示条件
+     */
+    fun judgeConditionsOpenAd(activity: AppCompatActivity): Boolean{
+        if (adBase.appAdDataSt == null) {
+            KLog.d(logTagSt, "open---开屏广告加载中。。。")
+            return false
+        }
+        if (adBase.whetherToShowSt || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
+            KLog.d(logTagSt, "open---前一个开屏广告展示中或者生命周期不对")
+            return false
         }
         return true
     }

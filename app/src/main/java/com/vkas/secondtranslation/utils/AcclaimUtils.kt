@@ -83,9 +83,9 @@ object AcclaimUtils {
         val adBean = StAdBean()
         adBean.st_open = sortByWeightDescending(elAdBean.st_open) { it.st_weight }.toMutableList()
         adBean.st_back = sortByWeightDescending(elAdBean.st_back) { it.st_weight }.toMutableList()
-        adBean.st_vpn = sortByWeightDescending(elAdBean.st_vpn) { it.st_weight }.toMutableList()
-        adBean.st_result = sortByWeightDescending(elAdBean.st_result) { it.st_weight }.toMutableList()
-        adBean.st_connect = sortByWeightDescending(elAdBean.st_connect) { it.st_weight }.toMutableList()
+        adBean.st_home = sortByWeightDescending(elAdBean.st_home) { it.st_weight }.toMutableList()
+        adBean.st_translation = sortByWeightDescending(elAdBean.st_translation) { it.st_weight }.toMutableList()
+        adBean.st_language = sortByWeightDescending(elAdBean.st_language) { it.st_weight }.toMutableList()
         adBean.st_show_num = elAdBean.st_show_num
         adBean.st_click_num = elAdBean.st_click_num
         return adBean
